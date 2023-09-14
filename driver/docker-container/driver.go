@@ -26,6 +26,7 @@ import (
 	dockerarchive "github.com/docker/docker/pkg/archive"
 	"github.com/docker/docker/pkg/idtools"
 	"github.com/docker/docker/pkg/stdcopy"
+	"github.com/dustin/go-humanize"
 	"github.com/moby/buildkit/client"
 	"github.com/moby/buildkit/util/tracing/detect"
 	"github.com/pkg/errors"
@@ -40,6 +41,7 @@ type Driver struct {
 	factory      driver.Factory
 	netMode      string
 	image        string
+	memory       string
 	cgroupParent string
 	env          []string
 }
@@ -125,6 +127,15 @@ func (d *Driver) create(ctx context.Context, l progress.SubLogger) error {
 		}
 		if d.netMode != "" {
 			hc.NetworkMode = container.NetworkMode(d.netMode)
+		}
+		if d.memory != "" {
+			var memory uint64
+			memory, err := humanize.ParseBytes(d.memory)
+			if err != nil {
+				return err
+			}
+
+			hc.Resources.Memory = int64(memory)
 		}
 		if info, err := d.DockerAPI.Info(ctx); err == nil {
 			if info.CgroupDriver == "cgroupfs" {
