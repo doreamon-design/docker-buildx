@@ -16,6 +16,7 @@ require (
 	github.com/docker/cli-docs-tool v0.6.0
 	github.com/docker/docker v24.0.5+incompatible
 	github.com/docker/go-units v0.5.0
+	github.com/dustin/go-humanize v1.0.0
 	github.com/gofrs/flock v0.8.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.3
