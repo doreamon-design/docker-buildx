@@ -8,6 +8,7 @@ import (
 	"github.com/docker/buildx/driver"
 	dockerclient "github.com/docker/docker/client"
 	"github.com/pkg/errors"
+	"github.com/spf13/cast"
 )
 
 const prioritySupported = 30
@@ -51,6 +52,18 @@ func (f *factory) New(ctx context.Context, cfg driver.InitConfig) (driver.Driver
 			d.image = v
 		case k == "memory":
 			d.memory = v
+		case k == "memory-swap":
+			d.memorySwap = v
+		case k == "cpu-period":
+			d.cpuPeriod = int64(cast.ToInt(v))
+		case k == "cpu-quota":
+			d.cpuQuota = int64(cast.ToInt(v))
+		case k == "cpu-shares":
+			d.cpuShares = int64(cast.ToInt(v))
+		case k == "cpuset-cpus":
+			d.cpusetCpus = v
+		case k == "cpuset-mems":
+			d.cpusetMems = v
 		case k == "cgroup-parent":
 			d.cgroupParent = v
 		case strings.HasPrefix(k, "env."):
