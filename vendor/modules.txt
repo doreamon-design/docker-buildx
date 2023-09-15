@@ -635,9 +635,15 @@ github.com/shibumi/go-pathspec
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
 github.com/sirupsen/logrus
+# github.com/spf13/cast v0.0.0-20150508191742-4d07383ffe94
+## explicit
+github.com/spf13/cast
 # github.com/spf13/cobra v1.7.0
 ## explicit; go 1.15
 github.com/spf13/cobra
+# github.com/spf13/jwalterweatherman v0.0.0-20141219030609-3d60171a6431
+## explicit
+github.com/spf13/jwalterweatherman
 # github.com/spf13/pflag v1.0.5
 ## explicit; go 1.12
 github.com/spf13/pflag

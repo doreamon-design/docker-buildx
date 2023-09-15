@@ -42,6 +42,12 @@ type Driver struct {
 	netMode      string
 	image        string
 	memory       string
+	memorySwap   string
+	cpuQuota     int64
+	cpuPeriod    int64
+	cpuShares    int64
+	cpusetCpus   string
+	cpusetMems   string
 	cgroupParent string
 	env          []string
 }
@@ -136,6 +142,29 @@ func (d *Driver) create(ctx context.Context, l progress.SubLogger) error {
 			}
 
 			hc.Resources.Memory = int64(memory)
+		}
+		if d.memorySwap != "" {
+			var memorySwap uint64
+			memorySwap, err := humanize.ParseBytes(d.memorySwap)
+			if err != nil {
+				return err
+			}
+			hc.Resources.MemorySwap = int64(memorySwap)
+		}
+		if d.cpuQuota != 0 {
+			hc.Resources.CPUQuota = d.cpuQuota
+		}
+		if d.cpuPeriod != 0 {
+			hc.Resources.CPUPeriod = d.cpuPeriod
+		}
+		if d.cpuShares != 0 {
+			hc.Resources.CPUShares = d.cpuShares
+		}
+		if d.cpusetCpus != "" {
+			hc.Resources.CpusetCpus = d.cpusetCpus
+		}
+		if d.cpusetMems != "" {
+			hc.Resources.CpusetMems = d.cpusetMems
 		}
 		if info, err := d.DockerAPI.Info(ctx); err == nil {
 			if info.CgroupDriver == "cgroupfs" {
