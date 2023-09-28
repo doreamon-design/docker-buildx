@@ -3,12 +3,12 @@ package docker
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/docker/buildx/driver"
 	dockerclient "github.com/docker/docker/client"
 	"github.com/pkg/errors"
-	"github.com/spf13/cast"
 )
 
 const prioritySupported = 30
@@ -59,11 +59,23 @@ func (f *factory) New(ctx context.Context, cfg driver.InitConfig) (driver.Driver
 				return nil, err
 			}
 		case k == "cpu-period":
-			d.cpuPeriod = int64(cast.ToInt(v))
+			vv, err := strconv.ParseInt(v, 10, 0)
+			if err != nil {
+				return nil, err
+			}
+			d.cpuPeriod = vv
 		case k == "cpu-quota":
-			d.cpuQuota = int64(cast.ToInt(v))
+			vv, err := strconv.ParseInt(v, 10, 0)
+			if err != nil {
+				return nil, err
+			}
+			d.cpuQuota = vv
 		case k == "cpu-shares":
-			d.cpuShares = int64(cast.ToInt(v))
+			vv, err := strconv.ParseInt(v, 10, 0)
+			if err != nil {
+				return nil, err
+			}
+			d.cpuShares = vv
 		case k == "cpuset-cpus":
 			d.cpusetCpus = v
 		case k == "cpuset-mems":
