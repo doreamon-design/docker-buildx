@@ -17,6 +17,7 @@ import (
 	"github.com/docker/buildx/util/confutil"
 	"github.com/docker/buildx/util/imagetools"
 	"github.com/docker/buildx/util/progress"
+	"github.com/docker/cli/opts"
 	dockertypes "github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
@@ -26,7 +27,6 @@ import (
 	dockerarchive "github.com/docker/docker/pkg/archive"
 	"github.com/docker/docker/pkg/idtools"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/dustin/go-humanize"
 	"github.com/moby/buildkit/client"
 	"github.com/moby/buildkit/util/tracing/detect"
 	"github.com/pkg/errors"
@@ -41,8 +41,8 @@ type Driver struct {
 	factory      driver.Factory
 	netMode      string
 	image        string
-	memory       string
-	memorySwap   string
+	memory       opts.MemBytes
+	memorySwap   opts.MemSwapBytes
 	cpuQuota     int64
 	cpuPeriod    int64
 	cpuShares    int64
@@ -134,22 +134,11 @@ func (d *Driver) create(ctx context.Context, l progress.SubLogger) error {
 		if d.netMode != "" {
 			hc.NetworkMode = container.NetworkMode(d.netMode)
 		}
-		if d.memory != "" {
-			var memory uint64
-			memory, err := humanize.ParseBytes(d.memory)
-			if err != nil {
-				return err
-			}
-
-			hc.Resources.Memory = int64(memory)
+		if d.memory != 0 {
+			hc.Resources.Memory = int64(d.memory)
 		}
-		if d.memorySwap != "" {
-			var memorySwap uint64
-			memorySwap, err := humanize.ParseBytes(d.memorySwap)
-			if err != nil {
-				return err
-			}
-			hc.Resources.MemorySwap = int64(memorySwap)
+		if d.memorySwap != 0 {
+			hc.Resources.MemorySwap = int64(d.memorySwap)
 		}
 		if d.cpuQuota != 0 {
 			hc.Resources.CPUQuota = d.cpuQuota

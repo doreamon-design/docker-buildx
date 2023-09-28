@@ -51,9 +51,13 @@ func (f *factory) New(ctx context.Context, cfg driver.InitConfig) (driver.Driver
 		case k == "image":
 			d.image = v
 		case k == "memory":
-			d.memory = v
+			if err := d.memory.Set(v); err == nil {
+				return nil, err
+			}
 		case k == "memory-swap":
-			d.memorySwap = v
+			if err := d.memorySwap.Set(v); err == nil {
+				return nil, err
+			}
 		case k == "cpu-period":
 			d.cpuPeriod = int64(cast.ToInt(v))
 		case k == "cpu-quota":
