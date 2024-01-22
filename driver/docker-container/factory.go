@@ -93,7 +93,7 @@ func (f *factory) New(ctx context.Context, cfg driver.InitConfig) (driver.Driver
 			d.cpusetMems = v
 		case k == "cgroup-parent":
 			d.cgroupParent = v
-		case k == "restart-policy":
+		case k == "restart":
 			vv, err := dockeropts.ParseRestartPolicy(v)
 			if err != nil {
 				return nil, err
